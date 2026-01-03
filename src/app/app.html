@@ -1,0 +1,33 @@
+<div class="app-container">
+  <h1>Выбор округов и районов Москвы</h1>
+
+  <div class="dropdowns-container">
+    <div class="dropdown-wrapper">
+      <dropdown
+        label="Округа"
+        [items]="districts"
+        [mode]="'multi'"
+        [selectedValues]="selectedDistricts()"
+        (selectionChange)="onDistrictsChange($event)"
+        placeholder="Выберите округа"
+      />
+    </div>
+
+    <div class="dropdown-wrapper">
+      <dropdown
+        label="Районы"
+        [groups]="areaGroups()"
+        [mode]="'multi'"
+        [searchable]="true"
+        [selectedValues]="selectedAreas()"
+        (selectionChange)="onAreasChange($event)"
+        placeholder="Выберите районы"
+      />
+    </div>
+  </div>
+
+  <div class="selected-areas">
+    <h2>Выбранные районы:</h2>
+    <pre>{{ selectedAreas() | json }}</pre>
+  </div>
+</div>
