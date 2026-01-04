@@ -1,0 +1,105 @@
+// colors
+$white: #fff;
+$light-grey: #ccc;
+$grey: #999;
+$deep-grey: #666;
+$dark-grey: #333;
+$light-blue: #e3f2fd;
+$blue: #4a90e2;
+
+// mixins
+@mixin checkbox($selected: false) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid $light-grey;
+  border-radius: 3px;
+  flex-shrink: 0;
+  background: $white;
+
+  @if $selected {
+    background: $blue;
+    border-color: $blue;
+    color: $white;
+  }
+}
+
+@mixin focus-outline($color: $blue, $offset: 2px) {
+  outline: 2px solid $color;
+  outline-offset: $offset;
+}
+
+@mixin focus-state($color: $blue) {
+  &:focus {
+    @include focus-outline($color);
+  }
+
+  &:focus-visible {
+    @include focus-outline($color);
+  }
+}
+
+@mixin dropdown-item-base($padding: 8px 12px) {
+  display: flex;
+  align-items: center;
+  padding: $padding;
+  cursor: pointer;
+  user-select: none;
+  gap: 5px;
+}
+
+@mixin dropdown-item-states {
+  &:hover:not(.disabled) {
+    background: $white;
+  }
+
+  &.focused:not(.disabled) {
+    background: $light-blue;
+    @include focus-outline($blue, -2px);
+  }
+
+  &.selected:not(.disabled) {
+    background: $light-blue;
+    font-weight: 500;
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: $white;
+  }
+}
+
+@mixin dropdown-item($padding: 8px 12px) {
+  @include dropdown-item-base($padding);
+  @include dropdown-item-states;
+}
+
+@mixin dropdown-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  border: 1px solid $light-grey;
+  background: $white;
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin-top: 4px;
+}
+
+@mixin group-header {
+  padding: 8px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: $deep-grey;
+  background: $white;
+  border-bottom: 1px solid $light-grey;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
