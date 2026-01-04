@@ -1,9 +1,9 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { Dropdown } from './dropdown/dropdown';
-import { DropdownGroup } from './types';
+import { DropdownGroup, DropdownMode } from './dropdown/types';
 import { JsonPipe, AsyncPipe } from '@angular/common';
 import { districts, areas } from './data';
-import { BehaviorSubject, combineLatest, map, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -12,40 +12,54 @@ import { BehaviorSubject, combineLatest, map, Subscription } from 'rxjs';
   styleUrl: './app.scss',
 })
 export class App implements OnDestroy {
+  // Make enum available to template
+  readonly DropdownMode = DropdownMode;
   readonly districts = districts;
   readonly areas = areas;
 
-  private selectedDistrictsSubject = new BehaviorSubject<string[]>(
-    districts.map((d) => d.value)
-  );
-  selectedDistricts$ = this.selectedDistrictsSubject.asObservable();
+  private selectedDistrictsSubject!: BehaviorSubject<string[]>;
+  selectedDistricts$!: Observable<string[]>;
 
-  private selectedAreasSubject = new BehaviorSubject<string[]>([]);
-  selectedAreas$ = this.selectedAreasSubject.asObservable();
+  private selectedAreasSubject!: BehaviorSubject<string[]>;
+  selectedAreas$!: Observable<string[]>;
 
-  areaGroups$ = combineLatest([this.selectedDistricts$]).pipe(
-    map(([selectedDistrictValues]) => {
-      return districts.map((district) => {
-        const groupAreas = areas
-          .filter((area) => area.district === district.value)
-          .map((area) => ({
-            label: area.label,
-            value: area.value,
-            disabled: false,
-          }));
+  areaGroups$!: Observable<DropdownGroup[]>;
 
-        const isDisabled = !selectedDistrictValues.includes(district.value);
+  private subscription: Subscription;
 
-        return {
-          label: district.label,
-          items: groupAreas,
-          disabled: isDisabled,
-        };
-      });
-    })
-  );
+  constructor() {
+    this.selectedDistrictsSubject = new BehaviorSubject<string[]>(
+      districts.map((d) => d.value)
+    );
+    this.selectedAreasSubject = new BehaviorSubject<string[]>([]);
+    this.subscription = new Subscription();
 
-  private subscription = new Subscription();
+    // Initialize observables after subjects are created
+    this.selectedDistricts$ = this.selectedDistrictsSubject.asObservable();
+    this.selectedAreas$ = this.selectedAreasSubject.asObservable();
+
+    this.areaGroups$ = combineLatest([this.selectedDistricts$]).pipe(
+      map(([selectedDistrictValues]) => {
+        return districts.map((district) => {
+          const groupAreas = areas
+            .filter((area) => area.district === district.value)
+            .map((area) => ({
+              label: area.label,
+              value: area.value,
+              disabled: false,
+            }));
+
+          const isDisabled = !selectedDistrictValues.includes(district.value);
+
+          return {
+            label: district.label,
+            items: groupAreas,
+            disabled: isDisabled,
+          };
+        });
+      })
+    );
+  }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();

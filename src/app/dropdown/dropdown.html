@@ -10,7 +10,7 @@
     @if (label) {
     <span class="dropdown-label">{{ label }}: </span>
     }
-    <span class="dropdown-value">{{ displayText }}</span>
+    <span class="dropdown-value">{{ displayText$ | async }}</span>
     <span class="arrow" [class.open]="isOpen">▼</span>
   </div>
 
@@ -19,7 +19,7 @@
     class="dropdown-panel"
     #dropdownPanel
     role="listbox"
-    [attr.aria-multiselectable]="mode === 'multi'"
+    [attr.aria-multiselectable]="mode === DropdownMode.Multi"
   >
     @if (searchable) {
     <div class="dropdown-search">
@@ -50,7 +50,7 @@
         [attr.aria-selected]="isSelected(item.value)"
         [attr.aria-disabled]="item.disabled"
       >
-        @if (mode === 'multi') {
+        @if (mode === DropdownMode.Multi) {
         <span class="checkbox">
           @if (isSelected(item.value)) {
           <span>✓</span>
@@ -85,7 +85,7 @@
             [attr.aria-selected]="isSelected(item.value)"
             [attr.aria-disabled]="item.disabled || group.disabled"
           >
-            @if (mode === 'multi') {
+            @if (mode === DropdownMode.Multi) {
             <span class="checkbox">
               @if (isSelected(item.value)) {
               <span>✓</span>
