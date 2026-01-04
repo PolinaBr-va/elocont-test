@@ -21,5 +21,14 @@ export interface DropdownGroup {
   disabled?: boolean;
 }
 
-export type DropdownMode = 'single' | 'multi';
+export interface GroupedDropdownItem {
+  item: DropdownItem;
+  groupIndex: number;
+  itemIndex: number;
+}
+
+export enum DropdownMode {
+  Single = 'single',
+  Multi = 'multi',
+}
 

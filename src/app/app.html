@@ -6,7 +6,7 @@
       <dropdown
         label="Округа"
         [items]="districts"
-        [mode]="'multi'"
+        [mode]="DropdownMode.Multi"
         [selectedValues]="selectedDistricts"
         (selectionChange)="onDistrictsChange($event)"
         placeholder="Выберите округа"
@@ -17,7 +17,7 @@
       <dropdown
         label="Районы"
         [groups]="areaGroups"
-        [mode]="'multi'"
+        [mode]="DropdownMode.Multi"
         [searchable]="true"
         [selectedValues]="selectedAreas"
         (selectionChange)="onAreasChange($event)"
