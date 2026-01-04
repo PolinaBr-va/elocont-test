@@ -2,100 +2,106 @@
   <div
     class="dropdown-header"
     (click)="toggle()"
-    [attr.aria-expanded]="isOpen()"
+    [attr.aria-expanded]="isOpen"
     [attr.aria-haspopup]="true"
     tabindex="0"
     role="button"
   >
-    <span class="dropdown-label" *ngIf="label">{{ label }}: </span>
-    <span class="dropdown-value">{{ displayText() }}</span>
-    <span class="arrow" [class.open]="isOpen()">▼</span>
+    @if (label) {
+    <span class="dropdown-label">{{ label }}: </span>
+    }
+    <span class="dropdown-value">{{ displayText }}</span>
+    <span class="arrow" [class.open]="isOpen">▼</span>
   </div>
 
+  @if (isOpen) {
   <div
     class="dropdown-panel"
-    *ngIf="isOpen()"
     #dropdownPanel
     role="listbox"
     [attr.aria-multiselectable]="mode === 'multi'"
   >
-    <!-- Search input -->
-    <div class="dropdown-search" *ngIf="searchable">
+    @if (searchable) {
+    <div class="dropdown-search">
       <input
         #searchInput
         type="text"
         class="search-input"
-        [value]="searchQuery()"
+        [value]="searchQuery"
         (input)="onSearchChange($event)"
         (click)="$event.stopPropagation()"
         placeholder="Поиск..."
         role="searchbox"
       />
     </div>
+    }
 
-    <!-- Items without groups -->
-    <div *ngIf="groups.length === 0" class="dropdown-items">
+    @if (groups.length === 0) {
+    <div class="dropdown-items">
+      @for (item of filteredItems; track item.value; let i = $index) {
       <div
-        *ngFor="let item of filteredItems(); let i = index"
         class="dropdown-item"
         [class.selected]="isSelected(item.value)"
         [class.disabled]="item.disabled"
-        [class.focused]="focusedIndex() === i"
+        [class.focused]="focusedIndex === i"
         [attr.data-index]="i"
         (click)="selectItem(item); $event.stopPropagation()"
         role="option"
         [attr.aria-selected]="isSelected(item.value)"
         [attr.aria-disabled]="item.disabled"
       >
-        <span class="checkbox" *ngIf="mode === 'multi'">
-          <span *ngIf="isSelected(item.value)">✓</span>
+        @if (mode === 'multi') {
+        <span class="checkbox">
+          @if (isSelected(item.value)) {
+          <span>✓</span>
+          }
         </span>
+        }
         <span class="item-label">{{ item.label }}</span>
       </div>
-      <div
-        *ngIf="filteredItems().length === 0"
-        class="dropdown-empty"
-      >
-        Ничего не найдено
-      </div>
+      } @if (filteredItems.length === 0) {
+      <div class="dropdown-empty">Ничего не найдено</div>
+      }
     </div>
+    }
 
-    <!-- Items with groups -->
-    <div *ngIf="groups.length > 0" class="dropdown-groups">
-      <div
-        *ngFor="let group of filteredGroups(); let groupIndex = index"
-        class="dropdown-group"
-        [class.disabled]="group.disabled"
-      >
+    @if (groups.length > 0) {
+    <div class="dropdown-groups">
+      @for (group of filteredGroups; track group; let groupIndex = $index) {
+      <div class="dropdown-group" [class.disabled]="group.disabled">
         <div class="group-header" [class.disabled]="group.disabled">
           {{ group.label }}
         </div>
         <div class="group-items">
+          @for (item of group.items; track item.value; let itemIndex = $index) {
           <div
-            *ngFor="let item of group.items; let itemIndex = index"
             class="dropdown-item"
             [class.selected]="isSelected(item.value)"
             [class.disabled]="item.disabled || group.disabled"
-            [class.focused]="focusedIndex() === getItemIndex(groupIndex, itemIndex)"
+            [class.focused]="focusedIndex === getItemIndex(groupIndex, itemIndex)"
             [attr.data-index]="getItemIndex(groupIndex, itemIndex)"
             (click)="selectItem(item); $event.stopPropagation()"
             role="option"
             [attr.aria-selected]="isSelected(item.value)"
             [attr.aria-disabled]="item.disabled || group.disabled"
           >
-            <span class="checkbox" *ngIf="mode === 'multi'">
-              <span *ngIf="isSelected(item.value)">✓</span>
+            @if (mode === 'multi') {
+            <span class="checkbox">
+              @if (isSelected(item.value)) {
+              <span>✓</span>
+              }
             </span>
+            }
             <span class="item-label">{{ item.label }}</span>
           </div>
+          }
         </div>
       </div>
-      <div
-        *ngIf="filteredGroups().length === 0"
-        class="dropdown-empty"
-      >
-        Ничего не найдено
-      </div>
+      } @if (filteredGroups.length === 0) {
+      <div class="dropdown-empty">Ничего не найдено</div>
+      }
     </div>
+    }
   </div>
+  }
 </div>

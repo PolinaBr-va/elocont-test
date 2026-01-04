@@ -7,7 +7,7 @@
         label="Округа"
         [items]="districts"
         [mode]="'multi'"
-        [selectedValues]="selectedDistricts()"
+        [selectedValues]="selectedDistricts"
         (selectionChange)="onDistrictsChange($event)"
         placeholder="Выберите округа"
       />
@@ -16,10 +16,10 @@
     <div class="dropdown-wrapper">
       <dropdown
         label="Районы"
-        [groups]="areaGroups()"
+        [groups]="areaGroups"
         [mode]="'multi'"
         [searchable]="true"
-        [selectedValues]="selectedAreas()"
+        [selectedValues]="selectedAreas"
         (selectionChange)="onAreasChange($event)"
         placeholder="Выберите районы"
       />
@@ -28,6 +28,6 @@
 
   <div class="selected-areas">
     <h2>Выбранные районы:</h2>
-    <pre>{{ selectedAreas() | json }}</pre>
+    <pre>{{ selectedAreas$ | async | json }}</pre>
   </div>
 </div>
